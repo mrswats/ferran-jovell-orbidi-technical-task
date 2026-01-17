@@ -1,7 +1,7 @@
 from django.db import models
 from django.db.models import F
-from django.db.models.function import Concat
 from django.db.models.function import Cast
+from django.db.models.function import Concat
 
 
 class IAE(models.Model):
