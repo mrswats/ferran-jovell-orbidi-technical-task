@@ -5,13 +5,18 @@ description = ""
 readme = "README.md"
 requires-python = ">=3.14.1"
 license = { file = "LICENSE" }
-dependencies = []
+dependencies = [
+    "django[argon2]",
+    "djangorestframework",
+    "djangorestframework-simplejwt",
+]
 
 [project.optional-dependencies]
 test = [
     "covdefaults",
     "pytest",
     "pytest-cov",
+    "pytest-django",
     "pytest-randomly",
     "pytest-xdist",
     "time-machine",
@@ -31,6 +36,9 @@ recursive = true
 files = "."
 ignore_missing_imports = true
 exclude = []
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "orbidi.settings"
 
 [tool.coverage.run]
 plugins = ["covdefaults"]
