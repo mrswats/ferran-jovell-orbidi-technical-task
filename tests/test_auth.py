@@ -2,10 +2,7 @@ from http import HTTPStatus
 
 import pytest
 from rest_framework.test import APIClient
-from rest_framework_simplejwt.tokens import AccessToken
 from rest_framework_simplejwt.tokens import RefreshToken
-
-from orbidi.auth import models
 
 
 @pytest.fixture
@@ -24,15 +21,7 @@ def refresh_token_url(url):
 
 
 @pytest.fixture
-def access_token():
-    def _(user: models.User) -> str:
-        return str(AccessToken.for_user(user))
-
-    return _
-
-
-@pytest.fixture
-def get_token(unauthenticated_client, token_url):
+def access_token(unauthenticated_client, token_url):
     def _(data: dict[str, str]):
         return unauthenticated_client.post(token_url, data=data)
 
@@ -47,14 +36,6 @@ def refresh_token(unauthenticated_client, refresh_token_url):
     return _
 
 
-@pytest.fixture
-def verify_token(unauthenticated_client, verify_token_url):
-    def _(token: str):
-        return unauthenticated_client.post(verify_token_url, data={"token": token})
-
-    return _
-
-
 def test_auth_url(token_url):
     assert token_url == "/auth/token/"
 
@@ -64,8 +45,8 @@ def test_refresh_url(refresh_token_url):
 
 
 @pytest.mark.django_db
-def test_get_token_status_code(get_token, user):
-    response = get_token(
+def test_get_token_status_code(access_token, user):
+    response = access_token(
         {
             "username": user.username,
             "password": "bar",
@@ -75,8 +56,8 @@ def test_get_token_status_code(get_token, user):
 
 
 @pytest.mark.django_db
-def test_get_token_data(get_token, user):
-    response = get_token(
+def test_get_token_data(access_token, user):
+    response = access_token(
         {
             "username": user.username,
             "password": "bar",

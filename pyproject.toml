@@ -42,7 +42,11 @@ DJANGO_SETTINGS_MODULE = "orbidi.settings"
 
 [tool.coverage.run]
 plugins = ["covdefaults"]
-omit = []
+omit = [
+    "./manage.py",
+    "wsgi.py",
+    "asgi.py",
+]
 
 [tool.coverage.html]
 directory = "artifacts/htmlcov/"
