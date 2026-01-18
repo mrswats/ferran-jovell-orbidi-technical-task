@@ -1,37 +1,31 @@
+from django.core import validators
 from django.db import models
 from django.db.models import F
-from django.db.models.function import Cast
-from django.db.models.function import Concat
+from django.db.models.functions import Concat
 
 
 class IAE(models.Model):
     code = models.CharField()
-    value = models.CharField()
     description = models.TextField()
 
 
 class Business(models.Model):
     external_id = models.GeneratedField(
-        Concat(
-            "BIZ-",
-            Cast(F("id")),
-        ),
+        expression=Concat(F("id"), F("id")),
         output_field=models.CharField(),
         db_persist=True,
     )
     name = models.CharField()
-    iae = models.ForeignKey(
-        IAE,
-        on_delete=models.DO_NOTHING,
-        related_name="businesses",
-    )
+    iae_code = models.CharField()
     rentability = models.IntegerField()
+    typology = models.FloatField(
+        validators=[
+            validators.MaxValueValidator(1.0),
+            validators.MinValueValidator(0.0),
+        ]
+    )
     latitude = models.FloatField()
     longitude = models.FloatField()
-
-    @property
-    def iae_code(self):
-        return self.iae.code
 
     @property
     def coordinates(self) -> dict[str, float]:

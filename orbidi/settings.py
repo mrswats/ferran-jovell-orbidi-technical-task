@@ -20,6 +20,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "orbidi.health",
     "orbidi.auth",
+    "orbidi.business",
 ]
 
 MIDDLEWARE = [
@@ -39,6 +40,8 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticated",
     ],
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
+    "PAGE_SIZE": 100,
 }
 
 ROOT_URLCONF = "orbidi.urls"

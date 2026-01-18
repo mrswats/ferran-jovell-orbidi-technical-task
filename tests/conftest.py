@@ -1,3 +1,5 @@
+from typing import Any
+
 import pytest
 from django.urls import reverse
 from rest_framework.test import APIClient
@@ -7,8 +9,8 @@ from orbidi.auth import models
 
 @pytest.fixture
 def url():
-    def _(*args, **kwargs):
-        return reverse(*args, **kwargs)
+    def _(url_name: str, **kwargs: Any):
+        return reverse(url_name, kwargs=kwargs)
 
     return _
 

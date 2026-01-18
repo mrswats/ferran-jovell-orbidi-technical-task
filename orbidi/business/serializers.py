@@ -21,3 +21,12 @@ class BusinessesSerializer(serializers.Serializer):
     location = serializers.DictField()
     count = serializers.IntegerField()
     businesses = BusinessSerializer(many=True)
+
+
+class IAESerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.IAE
+        fields = (
+            "code",
+            "description",
+        )

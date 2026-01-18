@@ -1,7 +1,10 @@
+from rest_framework import permissions
 from rest_framework import views
+from rest_framework import viewsets
 from rest_framework.request import Request
 from rest_framework.response import Response
 
+from orbidi.business import models
 from orbidi.business import serializers
 
 
@@ -21,8 +24,15 @@ class BusinessEndpoint(views.APIView):
                     "lat": lat,
                     "lon": lon,
                 },
-                count: count,
+                "count": count,
+                "radius": _radius,
                 "businesses": businesses.data,
             }
         )
         return Response(serializer.data)
+
+
+class IAEEndpoint(viewsets.ModelViewSet):
+    queryset = models.IAE.objects.all()
+    serializer_class = serializers.IAESerializer
+    permission_classes = (permissions.IsAdminUser,)
