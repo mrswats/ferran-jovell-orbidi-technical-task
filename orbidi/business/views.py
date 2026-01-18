@@ -1,42 +1,21 @@
-from rest_framework import serializers
 from rest_framework import views
 from rest_framework.request import Request
 from rest_framework.response import Response
 
-from orbidi.business import models
-
-
-class BusinessSerializer(serializers.ModelSerializer):
-    id = serializers.CharField(source="external_id")
-
-    class Meta:
-        model = models.Business
-        fields = (
-            "id",
-            "name",
-            "iae_code",
-            "rentability",
-            "coordinates",
-        )
-
-
-class BusinessesSerializer(serializers.Serializer):
-    location = serializers.DictField()
-    count = serializers.IntegerField()
-    businesses = BusinessSerializer(many=True)
+from orbidi.business import serializers
 
 
 class BusinessEndpoint(views.APIView):
     def get(self, request: Request) -> Response:
         lat = request.query_params.get("lat")
         lon = request.query_params.get("lon")
-        radius = request.query_params.get("radius")
+        _radius = request.query_params.get("radius")
 
         qs = None
-        businesses = BusinessSerializer(qs, many=True)
+        businesses = serializers.BusinessSerializer(qs, many=True)
         count = 0
 
-        serializer = BusinessSerializer(
+        serializer = serializers.BusinessSerializer(
             {
                 "location": {
                     "lat": lat,
