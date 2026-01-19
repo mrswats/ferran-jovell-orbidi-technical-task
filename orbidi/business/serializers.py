@@ -4,12 +4,10 @@ from orbidi.business import models
 
 
 class BusinessSerializer(serializers.ModelSerializer):
-    id = serializers.CharField(source="external_id")
-
     class Meta:
         model = models.Business
         fields = (
-            "id",
+            "external_id",
             "name",
             "iae_code",
             "rentability",

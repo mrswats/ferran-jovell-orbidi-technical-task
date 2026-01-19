@@ -17,6 +17,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django.contrib.gis",
     "rest_framework",
     "orbidi.health",
     "orbidi.auth",
@@ -69,7 +70,7 @@ WSGI_APPLICATION = "orbidi.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
+        "ENGINE": "django.contrib.gis.db.backends.spatialite",
         "NAME": BASE_DIR / "orbidi.db",
     }
 }

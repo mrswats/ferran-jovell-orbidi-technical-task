@@ -1,3 +1,5 @@
+from django.contrib.gis.db.models.functions import Distance
+from django.contrib.gis.geos.point import Point
 from rest_framework import permissions
 from rest_framework import views
 from rest_framework import viewsets
@@ -10,23 +12,29 @@ from orbidi.business import serializers
 
 class BusinessEndpoint(views.APIView):
     def get(self, request: Request) -> Response:
-        lat = request.query_params.get("lat")
-        lon = request.query_params.get("lon")
-        _radius = request.query_params.get("radius")
+        latitude = float(request.query_params.get("lat", "0.0"))
+        longitude = float(request.query_params.get("lon", "0.0"))
+        radius = int(request.query_params.get("radius", "0"))
 
-        qs = None
-        businesses = serializers.BusinessSerializer(qs, many=True)
-        count = 0
+        qs = (
+            models.Business.objects.annotate(
+                distance=Distance(
+                    Point(latitude, longitude, srid=4326),
+                    "location",
+                ),
+            )
+            .filter(distance__lt=radius)
+            .order_by("conversion_rate")
+        )
 
-        serializer = serializers.BusinessSerializer(
+        serializer = serializers.BusinessesSerializer(
             {
                 "location": {
-                    "lat": lat,
-                    "lon": lon,
+                    "lat": latitude,
+                    "lon": longitude,
                 },
-                "count": count,
-                "radius": _radius,
-                "businesses": businesses.data,
+                "count": qs.count(),
+                "businesses": qs,
             }
         )
         return Response(serializer.data)
