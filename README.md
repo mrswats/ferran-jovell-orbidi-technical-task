@@ -1,4 +1,4 @@
-# Awesome Python Project
+# ORBIDI Technical Test
 
 This is a template for python projects.
 
@@ -10,6 +10,18 @@ Create a virtual Environment
 virtualenv .venv -p pytthon 3.14
 source .venv/bin/activate
 ```
+
+## Run Locally
+
+After creating the virtual env
+
+```
+python -m manage migrate
+python -m manage runserver
+```
+
+And the site will be available at `http://localhost:8000/`.
+
 
 ## Tests
 

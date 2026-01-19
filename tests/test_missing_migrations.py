@@ -13,4 +13,3 @@ def test_for_missing_migrations():
 
     result = call_command("makemigrations", check=True, dry_run=True)
     assert result is None
-

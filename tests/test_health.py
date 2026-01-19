@@ -1,4 +1,5 @@
 from http import HTTPStatus
+
 import pytest
 
 
@@ -19,11 +20,13 @@ def test_health_url(health_url):
     assert health_url == "/_health/"
 
 
+@pytest.mark.django_db
 def test_health_endpoint_status_code(get_health):
     response = get_health()
     assert response.status_code == HTTPStatus.OK
 
 
+@pytest.mark.django_db
 def test_health_endpoint_data(get_health):
     response = get_health()
     assert response.json() == {"health": "ok"}
