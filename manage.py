@@ -4,7 +4,7 @@ import sys
 
 
 def main() -> int:
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "orbidi.settings")
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "orbidi.settings.production")
 
     try:
         from django.core.management import execute_from_command_line

@@ -2,7 +2,7 @@ import random
 
 import pytest
 
-from orbidi import metrics
+from orbidi.business import metrics
 
 
 @pytest.mark.parametrize(

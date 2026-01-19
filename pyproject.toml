@@ -39,7 +39,7 @@ ignore_missing_imports = true
 exclude = []
 
 [tool.pytest.ini_options]
-DJANGO_SETTINGS_MODULE = "orbidi.settings"
+DJANGO_SETTINGS_MODULE = "orbidi.settings.testing"
 
 [tool.coverage.run]
 plugins = ["covdefaults"]
@@ -47,6 +47,7 @@ omit = [
     "./manage.py",
     "wsgi.py",
     "asgi.py",
+    "**/settings/*.py",
 ]
 
 [tool.coverage.html]
