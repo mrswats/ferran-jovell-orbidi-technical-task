@@ -9,7 +9,7 @@ dependencies = [
     "django[argon2]",
     "djangorestframework",
     "djangorestframework-simplejwt",
-    "geopy",
+    "drf_spectacular",
 ]
 
 [project.optional-dependencies]

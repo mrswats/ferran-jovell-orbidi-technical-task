@@ -1,5 +1,8 @@
 from django.contrib.gis.db.models.functions import Distance
 from django.contrib.gis.geos.point import Point
+from drf_spectacular.utils import extend_schema
+from drf_spectacular.utils import OpenApiParameter
+from drf_spectacular.utils import OpenApiTypes
 from rest_framework import mixins
 from rest_framework import permissions
 from rest_framework import viewsets
@@ -10,7 +13,28 @@ from rest_framework.response import Response
 from orbidi.business import models
 from orbidi.business import serializers
 
+parameter_schema = extend_schema(
+    parameters=[
+        OpenApiParameter(
+            "lat",
+            OpenApiTypes.FLOAT,
+            description="Latitude as a float",
+        ),
+        OpenApiParameter(
+            "lon1",
+            OpenApiTypes.FLOAT,
+            description="Longitude as a float",
+        ),
+        OpenApiParameter(
+            "radius",
+            OpenApiTypes.INT,
+            description="Radius of action in meters",
+        ),
+    ],
+)
 
+
+@parameter_schema
 class BusinessEndpoint(viewsets.GenericViewSet):
     queryset = models.Business.objects.all()
     serializer_class = serializers.BusinessesSerializer
@@ -46,6 +70,7 @@ class BusinessEndpoint(viewsets.GenericViewSet):
         return Response(serializer.data)
 
 
+@parameter_schema
 class CompetitorsEndpoint(mixins.ListModelMixin, viewsets.GenericViewSet):
     queryset = models.Business.objects.all()
     serializer_class = serializers.BusinessSerializer
