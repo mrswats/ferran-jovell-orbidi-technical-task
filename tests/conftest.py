@@ -43,3 +43,16 @@ def business():
         latitude=41.473748,
         longitude=2.085348,
     )
+
+
+@pytest.fixture
+def competitor():
+    return models.Business.objects.create(
+        name="bar",
+        iae_code="E453",
+        rentability=80,
+        typology=0.2,
+        distance_to_the_city_center=250,
+        latitude=41.409188,
+        longitude=2.074123,
+    )

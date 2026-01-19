@@ -3,6 +3,7 @@ from django.contrib.gis.geos.point import Point
 from rest_framework import permissions
 from rest_framework import views
 from rest_framework import viewsets
+from rest_framework.generics import get_object_or_404
 from rest_framework.request import Request
 from rest_framework.response import Response
 
@@ -37,6 +38,33 @@ class BusinessEndpoint(views.APIView):
                 "businesses": qs,
             }
         )
+        return Response(serializer.data)
+
+
+class CompetitorsEndpoint(views.APIView):
+    def get_object(self):
+        return get_object_or_404(models.Business, external_id=self.kwargs["business_id"])
+
+    def get(self, request: Request, business_id: str) -> Response:
+        latitude = float(request.query_params.get("lat", "0.0"))
+        longitude = float(request.query_params.get("lon", "0.0"))
+        radius = int(request.query_params.get("radius", "0"))
+
+        business = self.get_object()
+
+        qs = (
+            models.Business.objects.exclude(pk=business.pk)
+            .filter(iae_code__startswith=f"{business.iae_code[:1]}")
+            .annotate(
+                distance=Distance(
+                    Point(latitude, longitude, srid=4326),
+                    "location",
+                ),
+            )
+            .filter(distance__lt=radius)
+        )
+
+        serializer = serializers.BusinessSerializer(qs, many=True)
         return Response(serializer.data)
 
 
