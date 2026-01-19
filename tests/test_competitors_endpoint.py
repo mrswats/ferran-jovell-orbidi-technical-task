@@ -7,7 +7,7 @@ import pytest
 @pytest.fixture
 def competitors_url(url):
     def _(business_id: str) -> str:
-        return url("api:competitors", business_id=business_id)
+        return url("api:competitors-list", business_id=business_id)
 
     return _
 
@@ -39,7 +39,12 @@ def test_competitors_endpoint_business_not_found_status_code(list_competitors):
 @pytest.mark.django_db
 def test_competitors_endpoint_no_params_business_data(list_competitors, business):
     response = list_competitors(business.external_id, {})
-    assert response.json() == []
+    assert response.json() == {
+        "count": 0,
+        "next": None,
+        "previous": None,
+        "results": [],
+    }
 
 
 @pytest.mark.django_db
@@ -47,7 +52,7 @@ def test_competitors_endpoint_business_data(list_competitors, business, competit
     response = list_competitors(
         business.external_id, {"lat": 41.50, "lon": 2.085348, "radius": 20000}
     )
-    assert response.json() == [
+    assert response.json()["results"] == [
         {
             "coordinates": {
                 "lat": 41.409188,

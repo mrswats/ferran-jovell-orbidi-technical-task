@@ -1,7 +1,7 @@
 from django.contrib.gis.db.models.functions import Distance
 from django.contrib.gis.geos.point import Point
+from rest_framework import mixins
 from rest_framework import permissions
-from rest_framework import views
 from rest_framework import viewsets
 from rest_framework.generics import get_object_or_404
 from rest_framework.request import Request
@@ -11,11 +11,15 @@ from orbidi.business import models
 from orbidi.business import serializers
 
 
-class BusinessEndpoint(views.APIView):
-    def get(self, request: Request) -> Response:
-        latitude = float(request.query_params.get("lat", "0.0"))
-        longitude = float(request.query_params.get("lon", "0.0"))
-        radius = int(request.query_params.get("radius", "0"))
+class BusinessEndpoint(viewsets.GenericViewSet):
+    queryset = models.Business.objects.all()
+    serializer_class = serializers.BusinessesSerializer
+    pagination_class = None
+
+    def list(self, request: Request) -> Response:
+        latitude = float(self.request.query_params.get("lat", "0.0"))
+        longitude = float(self.request.query_params.get("lon", "0.0"))
+        radius = int(self.request.query_params.get("radius", "0"))
 
         qs = (
             models.Business.objects.annotate(
@@ -28,7 +32,7 @@ class BusinessEndpoint(views.APIView):
             .order_by("conversion_rate")
         )
 
-        serializer = serializers.BusinessesSerializer(
+        serializer = self.get_serializer(
             {
                 "location": {
                     "lat": latitude,
@@ -38,21 +42,25 @@ class BusinessEndpoint(views.APIView):
                 "businesses": qs,
             }
         )
+
         return Response(serializer.data)
 
 
-class CompetitorsEndpoint(views.APIView):
-    def get_object(self):
+class CompetitorsEndpoint(mixins.ListModelMixin, viewsets.GenericViewSet):
+    queryset = models.Business.objects.all()
+    serializer_class = serializers.BusinessSerializer
+
+    def get_business(self):
         return get_object_or_404(models.Business, external_id=self.kwargs["business_id"])
 
-    def get(self, request: Request, business_id: str) -> Response:
-        latitude = float(request.query_params.get("lat", "0.0"))
-        longitude = float(request.query_params.get("lon", "0.0"))
-        radius = int(request.query_params.get("radius", "0"))
+    def get_queryset(self):
+        latitude = float(self.request.query_params.get("lat", "0.0"))
+        longitude = float(self.request.query_params.get("lon", "0.0"))
+        radius = int(self.request.query_params.get("radius", "0"))
 
-        business = self.get_object()
+        business = self.get_business()
 
-        qs = (
+        return (
             models.Business.objects.exclude(pk=business.pk)
             .filter(iae_code__startswith=f"{business.iae_code[:1]}")
             .annotate(
@@ -63,9 +71,6 @@ class CompetitorsEndpoint(views.APIView):
             )
             .filter(distance__lt=radius)
         )
-
-        serializer = serializers.BusinessSerializer(qs, many=True)
-        return Response(serializer.data)
 
 
 class IAEEndpoint(viewsets.ModelViewSet):

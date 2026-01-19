@@ -6,7 +6,7 @@ import pytest
 
 @pytest.fixture
 def business_url(url):
-    return url("api:business")
+    return url("api:business-list")
 
 
 @pytest.fixture
