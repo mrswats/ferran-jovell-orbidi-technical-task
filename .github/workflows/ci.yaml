@@ -28,6 +28,8 @@ jobs:
         run: |
           pip install -r test-requirements.txt
           pip install setuptools
+          sudo apt-get update
+          sudo apt-get install -y libsqlite3-mod-spatialite gdal-bin
 
       - name: Run Tests
         run: python -m pytest -n 4 --cov --cov-report term-missing
