@@ -2,6 +2,13 @@
 
 This is a template for python projects.
 
+## Dependencies
+
+For this project, the following dependencies are required:
+* Python 3.14+
+* [Spatialite](https://www.gaia-gis.it/fossil/libspatialite/index)
+* [gdal](https://gdal.org/en/stable/)
+
 ## Virtual Environment
 
 Create a virtual Environment
