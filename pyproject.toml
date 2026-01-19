@@ -10,6 +10,7 @@ dependencies = [
     "djangorestframework",
     "djangorestframework-simplejwt",
     "drf_spectacular",
+    "gunicorn",
 ]
 
 [project.optional-dependencies]
