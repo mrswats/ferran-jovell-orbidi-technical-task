@@ -48,7 +48,12 @@ def test_competitors_endpoint_no_params_business_data(list_competitors, business
 
 
 @pytest.mark.django_db
-def test_competitors_endpoint_business_data(list_competitors, business, competitor):
+def test_competitors_endpoint_business_data(
+    list_competitors,
+    business,
+    competitor,
+    not_a_competitor,
+):
     response = list_competitors(
         business.external_id, {"lat": 41.50, "lon": 2.085348, "radius": 20000}
     )

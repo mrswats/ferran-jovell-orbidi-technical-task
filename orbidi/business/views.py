@@ -91,7 +91,7 @@ class CompetitorsEndpoint(mixins.ListModelMixin, viewsets.GenericViewSet):
 
         return (
             models.Business.objects.exclude(pk=business.pk)
-            .filter(iae__code__startswith=f"{business.iae.code[:1]}")
+            .filter(iae__code__startswith=f"{business.iae.code[0]}")
             .annotate(
                 distance=Distance(
                     Point(latitude, longitude, srid=4326),

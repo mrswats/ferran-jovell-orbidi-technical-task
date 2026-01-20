@@ -53,6 +53,16 @@ def iae_453():
 
 
 @pytest.fixture
+def iae_350():
+    return models.IAE.objects.create(
+        code="342.1",
+        group="E",
+        value=212,
+        description="Maquinas Trasformacion Electricidad",
+    )
+
+
+@pytest.fixture
 def business(iae_471):
     return models.Business.objects.create(
         name="foo",
@@ -71,6 +81,18 @@ def competitor(iae_453):
         iae=iae_453,
         rentability=80,
         distance_to_the_city_center=250,
+        latitude=41.409188,
+        longitude=2.074123,
+    )
+
+
+@pytest.fixture
+def not_a_competitor(iae_350):
+    return models.Business.objects.create(
+        name="Fabrica de Maquinas Transformadoras de Electricidad muy buenas",
+        iae=iae_350,
+        rentability=75,
+        distance_to_the_city_center=25000,
         latitude=41.409188,
         longitude=2.074123,
     )
