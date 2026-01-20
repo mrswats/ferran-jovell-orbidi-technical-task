@@ -25,4 +25,4 @@ def test_proximity():
 
 
 def test_conversion_rate_probability():
-    assert metrics.conversion_rate_probability(50, 0.7, 100) == 0.5948279460681152
+    assert metrics.conversion_rate_probability(50, 700, 100) == 0.5948279460681152
