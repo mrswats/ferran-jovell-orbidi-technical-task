@@ -33,12 +33,31 @@ def client(user):
 
 
 @pytest.fixture
-def business():
+def iae_471():
+    return models.IAE.objects.create(
+        code="471.1",
+        group="E",
+        value=500,
+        description="Pasta Papelera",
+    )
+
+
+@pytest.fixture
+def iae_453():
+    return models.IAE.objects.create(
+        code="453",
+        group="E",
+        value=649,
+        description="Confeccion prendas de vestir.",
+    )
+
+
+@pytest.fixture
+def business(iae_471):
     return models.Business.objects.create(
         name="foo",
-        iae_code="E471.1",
+        iae=iae_471,
         rentability=50,
-        typology=0.7,
         distance_to_the_city_center=100,
         latitude=41.473748,
         longitude=2.085348,
@@ -46,12 +65,11 @@ def business():
 
 
 @pytest.fixture
-def competitor():
+def competitor(iae_453):
     return models.Business.objects.create(
         name="bar",
-        iae_code="E453",
+        iae=iae_453,
         rentability=80,
-        typology=0.2,
         distance_to_the_city_center=250,
         latitude=41.409188,
         longitude=2.074123,

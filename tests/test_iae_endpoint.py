@@ -21,17 +21,11 @@ def admin_client(user):
 @pytest.fixture
 def iae_data():
     return {
-        "code": "E471.1",
-        "description": "Pasta Papelera",
+        "code": "312.1",
+        "group": "E",
+        "value": "800",
+        "description": "Piezas Forjadas",
     }
-
-
-@pytest.fixture
-def iae():
-    return models.IAE.objects.create(
-        code="foo",
-        description="code for foo",
-    )
 
 
 @pytest.fixture
