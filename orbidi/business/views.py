@@ -77,7 +77,10 @@ class CompetitorsEndpoint(mixins.ListModelMixin, viewsets.GenericViewSet):
     serializer_class = serializers.BusinessSerializer
 
     def get_business(self):
-        return get_object_or_404(models.Business, external_id=self.kwargs["business_id"])
+        return get_object_or_404(
+            models.Business.objects.prefetch_related("iae"),
+            external_id=self.kwargs["business_id"],
+        )
 
     def get_queryset(self):
         latitude = float(self.request.query_params.get("lat", "0.0"))
@@ -88,7 +91,7 @@ class CompetitorsEndpoint(mixins.ListModelMixin, viewsets.GenericViewSet):
 
         return (
             models.Business.objects.exclude(pk=business.pk)
-            .filter(iae__code__startswith=f"{business.iae_code[:1]}")
+            .filter(iae__code__startswith=f"{business.iae.code[:1]}")
             .annotate(
                 distance=Distance(
                     Point(latitude, longitude, srid=4326),
