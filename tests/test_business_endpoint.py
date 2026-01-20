@@ -22,6 +22,11 @@ def test_business_url(business_url):
 
 
 @pytest.mark.django_db
+def test_business_str(business):
+    assert str(business) == "foo"
+
+
+@pytest.mark.django_db
 def test_business_endpoint_status_code(business_list):
     response = business_list({"lat": 41.473748, "lon": 2.085348, "radius": 5000})
     assert response.status_code == HTTPStatus.OK
@@ -51,7 +56,7 @@ def test_business_endpoint_non_empty_data(business_list, business):
                     "lon": 2.085348,
                 },
                 "external_id": "BIZ-1",
-                "iae_code": "E471.1",
+                "iae_code": "471.1",
                 "name": "foo",
                 "rentability": 50,
             },

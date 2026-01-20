@@ -9,6 +9,7 @@ from rest_framework import viewsets
 from rest_framework.generics import get_object_or_404
 from rest_framework.request import Request
 from rest_framework.response import Response
+from rest_framework.serializers import Serializer
 
 from orbidi.business import models
 from orbidi.business import serializers
@@ -76,7 +77,10 @@ class CompetitorsEndpoint(mixins.ListModelMixin, viewsets.GenericViewSet):
     serializer_class = serializers.BusinessSerializer
 
     def get_business(self):
-        return get_object_or_404(models.Business, external_id=self.kwargs["business_id"])
+        return get_object_or_404(
+            models.Business.objects.prefetch_related("iae"),
+            external_id=self.kwargs["business_id"],
+        )
 
     def get_queryset(self):
         latitude = float(self.request.query_params.get("lat", "0.0"))
@@ -87,7 +91,7 @@ class CompetitorsEndpoint(mixins.ListModelMixin, viewsets.GenericViewSet):
 
         return (
             models.Business.objects.exclude(pk=business.pk)
-            .filter(iae_code__startswith=f"{business.iae_code[:1]}")
+            .filter(iae__code__startswith=f"{business.iae.code[:1]}")
             .annotate(
                 distance=Distance(
                     Point(latitude, longitude, srid=4326),
@@ -102,3 +106,9 @@ class IAEEndpoint(viewsets.ModelViewSet):
     queryset = models.IAE.objects.all()
     serializer_class = serializers.IAESerializer
     permission_classes = (permissions.IsAdminUser,)
+
+    def get_serializer_class(self) -> type[Serializer]:
+        if self.action == "create":
+            return serializers.IAECreateSerializer
+
+        return super().get_serializer_class()

@@ -4,8 +4,6 @@ from typing import Any
 import pytest
 from rest_framework.test import APIClient
 
-from orbidi.business import models
-
 
 @pytest.fixture
 def admin_client(user):
@@ -21,17 +19,11 @@ def admin_client(user):
 @pytest.fixture
 def iae_data():
     return {
-        "code": "E471.1",
-        "description": "Pasta Papelera",
+        "code": "312.1",
+        "group": "E",
+        "value": 800,
+        "description": "Piezas Forjadas",
     }
-
-
-@pytest.fixture
-def iae():
-    return models.IAE.objects.create(
-        code="foo",
-        description="code for foo",
-    )
 
 
 @pytest.fixture
@@ -96,6 +88,11 @@ def test_iae_url_detail(iae_url_detail):
 
 
 @pytest.mark.django_db
+def test_iae_str(iae_453):
+    assert str(iae_453) == "453"
+
+
+@pytest.mark.django_db
 def test_iae_create_status_code(create_iae, iae_data):
     response = create_iae(data=iae_data)
     assert response.status_code == HTTPStatus.CREATED
@@ -108,15 +105,20 @@ def test_iae_create_data(create_iae, iae_data):
 
 
 @pytest.mark.django_db
-def test_iae_retrieve_status_code(retrieve_iae, iae):
-    response = retrieve_iae(iae.pk)
+def test_iae_retrieve_status_code(retrieve_iae, iae_471):
+    response = retrieve_iae(iae_471.pk)
     assert response.status_code == HTTPStatus.OK
 
 
 @pytest.mark.django_db
-def test_iae_retrieve_data(retrieve_iae, iae):
-    response = retrieve_iae(iae.pk)
-    assert response.json() == {"code": "foo", "description": "code for foo"}
+def test_iae_retrieve_data(retrieve_iae, iae_471):
+    response = retrieve_iae(iae_471.pk)
+    assert response.json() == {
+        "code": "471.1",
+        "description": "Pasta Papelera",
+        "group": "E",
+        "value": 500,
+    }
 
 
 @pytest.mark.django_db
@@ -126,30 +128,51 @@ def test_iae_list_status_code(list_iae):
 
 
 @pytest.mark.django_db
-def test_iae_list_data(list_iae, iae):
+def test_iae_list_data(list_iae, iae_471):
     response = list_iae()
-    assert response.json()["results"] == [{"code": "foo", "description": "code for foo"}]
+    assert response.json()["results"] == [
+        {
+            "code": "471.1",
+            "description": "Pasta Papelera",
+            "group": "E",
+            "value": 500,
+        }
+    ]
 
 
 @pytest.mark.django_db
-def test_iae_update_status_code(update_iae, iae):
-    response = update_iae(iae.pk, {"description": "foo for description"})
+@pytest.mark.parametrize(
+    "field, new_value",
+    [
+        ("description", "another very different desccription"),
+        ("value", 420),
+    ],
+)
+def test_iae_update_status_code(update_iae, iae_471, field, new_value):
+    response = update_iae(iae_471.pk, {field: new_value})
     assert response.status_code == HTTPStatus.OK
 
 
 @pytest.mark.django_db
-def test_iae_update_data(update_iae, iae):
-    response = update_iae(iae.pk, {"description": "foo for description"})
-    assert response.json() == {"code": "foo", "description": "foo for description"}
+@pytest.mark.parametrize(
+    "field, new_value",
+    [
+        ("description", "another very different desccription"),
+        ("value", 420),
+    ],
+)
+def test_iae_update_data(update_iae, iae_471, field, new_value):
+    response = update_iae(iae_471.pk, {field: new_value})
+    assert response.json()[field] == new_value
 
 
 @pytest.mark.django_db
-def test_iae_delete_status_code(delete_iae, iae):
-    response = delete_iae(iae.pk)
+def test_iae_delete_status_code(delete_iae, iae_471):
+    response = delete_iae(iae_471.pk)
     assert response.status_code == HTTPStatus.NO_CONTENT
 
 
 @pytest.mark.django_db
-def test_iae_delete_data(delete_iae, iae):
-    response = delete_iae(iae.pk)
+def test_iae_delete_data(delete_iae, iae_471):
+    response = delete_iae(iae_471.pk)
     assert response.content == b""

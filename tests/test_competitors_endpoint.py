@@ -59,7 +59,7 @@ def test_competitors_endpoint_business_data(list_competitors, business, competit
                 "lon": 2.074123,
             },
             "external_id": "BIZ-2",
-            "iae_code": "E453",
+            "iae_code": "453",
             "name": "bar",
             "rentability": 80,
         },
