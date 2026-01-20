@@ -9,6 +9,7 @@ from rest_framework import viewsets
 from rest_framework.generics import get_object_or_404
 from rest_framework.request import Request
 from rest_framework.response import Response
+from rest_framework.serializers import Serializer
 
 from orbidi.business import models
 from orbidi.business import serializers
@@ -102,3 +103,9 @@ class IAEEndpoint(viewsets.ModelViewSet):
     queryset = models.IAE.objects.all()
     serializer_class = serializers.IAESerializer
     permission_classes = (permissions.IsAdminUser,)
+
+    def get_serializer_class(self) -> type[Serializer]:
+        if self.action == "create":
+            return serializers.IAECreateSerializer
+
+        return super().get_serializer_class()

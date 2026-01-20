@@ -1,6 +1,5 @@
 from django.contrib.gis.db import models as geo_models
 from django.contrib.gis.geos.point import Point
-from django.core import validators
 from django.db import models
 from django.db.models import F
 from django.db.models import Value

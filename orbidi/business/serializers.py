@@ -4,6 +4,8 @@ from orbidi.business import models
 
 
 class BusinessSerializer(serializers.ModelSerializer):
+    iae_code = serializers.CharField(source="iae.code")
+
     class Meta:
         model = models.Business
         fields = (
@@ -21,10 +23,27 @@ class BusinessesSerializer(serializers.Serializer):
     businesses = BusinessSerializer(many=True)
 
 
+class IAECreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.IAE
+        fields = (
+            "code",
+            "description",
+            "group",
+            "value",
+        )
+
+
 class IAESerializer(serializers.ModelSerializer):
     class Meta:
         model = models.IAE
         fields = (
             "code",
             "description",
+            "group",
+            "value",
+        )
+        read_only_fields = (
+            "code",
+            "group",
         )

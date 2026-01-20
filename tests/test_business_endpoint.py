@@ -51,7 +51,7 @@ def test_business_endpoint_non_empty_data(business_list, business):
                     "lon": 2.085348,
                 },
                 "external_id": "BIZ-1",
-                "iae_code": "E471.1",
+                "iae_code": "471.1",
                 "name": "foo",
                 "rentability": 50,
             },
