@@ -88,6 +88,11 @@ def test_iae_url_detail(iae_url_detail):
 
 
 @pytest.mark.django_db
+def test_iae_str(iae_453):
+    assert str(iae_453) == "453"
+
+
+@pytest.mark.django_db
 def test_iae_create_status_code(create_iae, iae_data):
     response = create_iae(data=iae_data)
     assert response.status_code == HTTPStatus.CREATED
